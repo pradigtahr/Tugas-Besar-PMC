@@ -33,14 +33,16 @@ int add(Pasien **head, int nomor, char tokenNama[], char tokenAlamat[], char tok
     temp->umur = umur;
     temp->bpjs = bpjs;
     strcpy(temp->id, tokenID);
+    temp->next = NULL;
 
-    if(*head == NULL){
-        temp->next = NULL;
+    if(*head == NULL) {
         *head = temp;
-    }
-    else{
-        temp->next = *head;
-        *head = temp;
+    } else {
+        Pasien *current = *head;
+        while(current->next != NULL) {
+            current = current->next;
+        }
+        current->next = temp;
     }
 
     return 0;
@@ -86,7 +88,7 @@ Pasien* input_data_pasien() {
 void print(Pasien *head) {
     Pasien* display = head;
     while (display != NULL) {
-        printf("%d. Nama: %s \t|| Alamat: %s\t|| Domisili: %s\t|| Lahir di: %s\t|| Tanggal Lahir: %s\t|| Umur: %d\t\t|| BPJS: %d\t|| ID: %d\n", display->no, display->nama, 
+        printf("%d. Nama: %s \t|| Alamat: %s\t|| Domisili: %s\t|| Lahir di: %s\t|| Tanggal Lahir: %s\t|| Umur: %d\t\t|| BPJS: %d\t|| ID: %s\n", display->no, display->nama, 
         display->alamat, display->kota, display->tempat_lahir, display->tanggal_lahir, display->umur, display->bpjs, display->id);
         display = display->next;
     }
