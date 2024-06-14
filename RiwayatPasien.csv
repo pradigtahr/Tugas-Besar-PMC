@@ -1,0 +1,76 @@
+﻿No,Tanggal,ID Pasien,Diagnosis,Tindakan,Kontrol,Biaya(Rp)
+1,1 Januari 2022,KX 1230123,Dehidrasi,Pemasangan infus,4 Januari 2022,265000
+2,11 Agustus 2023,KX 1230132,Masuk Angin,Vaksinasi,14 Agustus 2023,240000
+3,3 September 2023,KX 1230134,Dehidrasi,Cek gula darah,6 September 2023,165000
+4,1 November 2023,KX 1230164,Dehidrasi,Vaksinasi,4 November 2023,240000
+5,20 Maret 2023,KX 1230132,Keseleo,Cek gula darah,23 Maret 2023,165000
+6,10 September 2022,KX 1230166,Pusing,Pemasangan infus,13 September 2022,265000
+7,17 Oktober 2022,KX 1230146,Dehidrasi,Pemasangan infus,20 Oktober 2022,265000
+8,21 Maret 2022,KX 1230136,Pusing,Pemasangan infus,24 Maret 2022,265000
+9,23 Mei 2023,KX 1230155,Keseleo,Vaksinasi,26 Mei 2023,240000
+10,25 Mei 2022,KX 1230131,Masuk Angin,Pengobatan,28 Mei 2022,290000
+11,10 April 2022,KX 1230163,Dehidrasi,Pengobatan,13 April 2022,290000
+12,20 April 2022,KX 1230140,Dehidrasi,Cek gula darah,23 April 2022,165000
+13,17 Januari 2022,KX 1230140,Pusing,Cek gula darah,20 Januari 2022,165000
+14,9 April 2023,KX 1230137,Masuk Angin,Vaksinasi,12 April 2023,240000
+15,3 Agustus 2023,KX 1230149,Masuk Angin,Cek gula darah,6 Agustus 2023,165000
+16,19 Agustus 2022,KX 1230168,Masuk Angin,Pengobatan,22 Agustus 2022,290000
+17,24 Juni 2023,KX 1230164,Keseleo,Cek gula darah,27 Juni 2023,165000
+18,17 Mei 2023,KX 1230133,Pusing,Vaksinasi,20 Mei 2023,240000
+19,27 September 2022,KX 1230139,Dehidrasi,Cek gula darah,30 September 2022,165000
+20,4 Desember 2022,KX 1230124,Keseleo,Cek gula darah,7 Desember 2022,165000
+21,3 September 2023,KX 1230130,Dehidrasi,Pemasangan infus,6 September 2023,265000
+22,3 Juli 2022,KX 1230160,Keseleo,Pengobatan,6 Juli 2022,290000
+23,26 Desember 2022,KX 1230166,Masuk Angin,Vaksinasi,29 Desember 2022,240000
+24,21 Mei 2022,KX 1230165,Keseleo,Pemasangan infus,24 Mei 2022,265000
+25,16 Agustus 2023,KX 1230169,Dehidrasi,Pemasangan infus,19 Agustus 2023,265000
+26,8 Agustus 2023,KX 1230140,Masuk Angin,Pemasangan infus,11 Agustus 2023,265000
+27,27 April 2022,KX 1230148,Keseleo,Vaksinasi,30 April 2022,240000
+28,3 September 2023,KX 1230147,Masuk Angin,Pemasangan infus,6 September 2023,265000
+29,18 Agustus 2022,KX 1230134,Keseleo,Vaksinasi,21 Agustus 2022,240000
+30,3 September 2023,KX 1230143,Masuk Angin,Cek gula darah,6 September 2023,165000
+31,7 April 2023,KX 1230156,Dehidrasi,Pengobatan,10 April 2023,290000
+32,21 Juli 2022,KX 1230166,Dehidrasi,Pengobatan,24 Juli 2022,290000
+33,27 September 2023,KX 1230147,Dehidrasi,Cek gula darah,30 September 2023,165000
+34,10 Januari 2023,KX 1230123,Dehidrasi,Vaksinasi,13 Januari 2023,240000
+35,24 Januari 2022,KX 1230156,Masuk Angin,Pengobatan,27 Januari 2022,290000
+36,12 September 2023,KX 1230146,Pusing,Pemasangan infus,15 September 2023,265000
+37,14 Mei 2023,KX 1230142,Pusing,Vaksinasi,17 Mei 2023,240000
+38,6 Maret 2022,KX 1230135,Dehidrasi,Pengobatan,9 Maret 2022,290000
+39,13 Juni 2023,KX 1230144,Dehidrasi,Cek gula darah,16 Juni 2023,165000
+40,11 Oktober 2022,KX 1230135,Keseleo,Pemasangan infus,14 Oktober 2022,265000
+41,14 Oktober 2022,KX 1230170,Dehidrasi,Pengobatan,17 Oktober 2022,290000
+42,24 Mei 2022,KX 1230153,Masuk Angin,Cek gula darah,27 Mei 2022,165000
+43,13 Januari 2022,KX 1230158,Dehidrasi,Vaksinasi,16 Januari 2022,240000
+44,18 Desember 2022,KX 1230141,Keseleo,Vaksinasi,21 Desember 2022,240000
+45,6 Desember 2022,KX 1230156,Keseleo,Pemasangan infus,9 Desember 2022,265000
+46,8 Agustus 2023,KX 1230161,Masuk Angin,Pemasangan infus,11 Agustus 2023,265000
+47,25 Juli 2022,KX 1230165,Keseleo,Pengobatan,28 Juli 2022,290000
+48,22 Januari 2023,KX 1230154,Keseleo,Vaksinasi,25 Januari 2023,240000
+49,11 Oktober 2023,KX 1230129,Masuk Angin,Pengobatan,14 Oktober 2023,290000
+50,27 Januari 2023,KX 1230147,Pusing,Pengobatan,30 Januari 2023,290000
+51,17 Mei 2023,KX 1230166,Masuk Angin,Cek gula darah,20 Mei 2023,165000
+52,2 Juli 2022,KX 1230129,Masuk Angin,Pemasangan infus,5 Juli 2022,265000
+53,25 September 2023,KX 1230155,Keseleo,Vaksinasi,28 September 2023,240000
+54,16 Desember 2022,KX 1230165,Pusing,Cek gula darah,19 Desember 2022,165000
+55,19 September 2022,KX 1230145,Keseleo,Vaksinasi,22 September 2022,240000
+56,4 Desember 2023,KX 1230161,Dehidrasi,Pengobatan,7 Desember 2023,290000
+57,9 Mei 2023,KX 1230151,Dehidrasi,Pengobatan,12 Mei 2023,290000
+58,11 November 2022,KX 1230150,Masuk Angin,Vaksinasi,14 November 2022,240000
+59,22 Januari 2022,KX 1230161,Dehidrasi,Cek gula darah,25 Januari 2022,165000
+60,9 September 2022,KX 1230166,Dehidrasi,Pemasangan infus,12 September 2022,265000
+61,6 September 2023,KX 1230169,Pusing,Vaksinasi,9 September 2023,240000
+62,20 Desember 2023,KX 1230153,Dehidrasi,Vaksinasi,23 Desember 2023,240000
+63,9 Juli 2022,KX 1230123,Pusing,Vaksinasi,12 Juli 2022,240000
+64,11 September 2023,KX 1230145,Keseleo,Pengobatan,14 September 2023,290000
+65,3 Juni 2023,KX 1230167,Keseleo,Pemasangan infus,6 Juni 2023,265000
+66,18 Januari 2023,KX 1230154,Dehidrasi,Vaksinasi,21 Januari 2023,240000
+67,17 Juli 2022,KX 1230161,Pusing,Pengobatan,20 Juli 2022,290000
+68,25 Maret 2022,KX 1230127,Dehidrasi,Pemasangan infus,28 Maret 2022,265000
+69,19 April 2023,KX 1230156,Dehidrasi,Vaksinasi,22 April 2023,240000
+70,2 Mei 2022,KX 1230125,Pusing,Pengobatan,5 Mei 2022,290000
+71,11 Mei 2023,KX 1230125,Masuk Angin,Vaksinasi,14 Mei 2023,240000
+72,17 Juni 2023,KX 1230153,Pusing,Vaksinasi,20 Juni 2023,240000
+73,18 April 2023,KX 1230147,Dehidrasi,Pengobatan,21 April 2023,290000
+74,10 April 2022,KX 1230150,Keseleo,Vaksinasi,13 April 2022,240000
+75,12 Agustus 2022,KX 1230141,Masuk Angin,Cek gula darah,15 Agustus 2022,165000
