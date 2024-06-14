@@ -21,6 +21,7 @@ int bacaData(const char *filename, Pasien **data) {
         return -1;
     }
 
+    // Hitung jumlah baris dalam file
     char buffer[256];
     int count = 0;
     while (fgets(buffer, sizeof(buffer), file)) {
@@ -32,6 +33,7 @@ int bacaData(const char *filename, Pasien **data) {
     }
     rewind(file);
 
+    // Alokasikan memori untuk data pasien
     *data = (Pasien *)malloc((count - 1) * sizeof(Pasien));
     if (!*data) {
         printf("Gagal mengalokasikan memori.\n");
@@ -39,6 +41,7 @@ int bacaData(const char *filename, Pasien **data) {
         return -1;
     }
 
+    // Baca data dari file dan simpan ke dalam struktur Pasien
     int i = 0;
     count = 0;
     while (fgets(buffer, sizeof(buffer), file)) {
@@ -58,7 +61,7 @@ int bacaData(const char *filename, Pasien **data) {
     }
 
     fclose(file);
-    return i;
+    return i; // Mengembalikan jumlah data yang berhasil dibaca
 }
 
 // Fungsi untuk mencari pasien berdasarkan ID dan menampilkan informasi kontrol
@@ -82,7 +85,7 @@ int main() {
     Pasien *data;
     int count = bacaData(filename, &data);
     if (count == -1) {
-        return 1;
+        return 1; // Keluar dari program jika gagal membaca file
     }
 
     char id_pasien[20];
@@ -91,6 +94,7 @@ int main() {
     // Menghapus newline di akhir input
     id_pasien[strcspn(id_pasien, "\n")] = '\0';
 
+    // Cari dan tampilkan informasi kontrol untuk pasien dengan ID tertentu
     cariKontrol(id_pasien, data, count);
 
     free(data);
