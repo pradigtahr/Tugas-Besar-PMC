@@ -909,29 +909,42 @@ void start_program() {
         }
 
         // Punya gastya
-        case 2:{
-            char choice2[MAX_STR];
-            printf("Apa yang ingin anda sunting (tambah/ubah/hapus/cari)?\n");
-            printf(">> ");
-            fgets(choice2, MAX_STR, stdin);
-            choice2[strcspn(choice2, "\n")] = '\0';  // Remove the newline character
+        case 2: {
+            int choice;
+            while (1) {
+                printf("\nMenu:\n");
+                printf("1. Tambah Riwayat Pasien\n");
+                printf("2. Ubah Riwayat Pasien\n");
+                printf("3. Cari Riwayat Pasien\n");
+                printf("4. Hapus Riwayat Pasien\n");
+                printf("5. Ke menu utama\n");
+                printf("Pilih opsi: ");
+                scanf("%d", &choice);
+                getchar(); // Membersihkan buffer newline
 
-            if (strcmp(choice2, "tambah") == 0) {
-                add_record();
-            } else if (strcmp(choice2, "ubah") == 0) {
-                update_record();
-            } else if (strcmp(choice2, "cari") == 0) {
-                search_record();
-            } else if (strcmp(choice2, "hapus") == 0) {
-                delete_record();
-            } else {
-                printf("Input tidak valid!\n");
+                switch (choice) {
+                    case 1:
+                        add_record();
+                        break;
+                    case 2:
+                        update_record();
+                        break;
+                    case 3:
+                        search_record();
+                        break;
+                    case 4:
+                        delete_record();
+                        break;
+                    case 5:
+                        printf("\n");
+                        goto exit_submenu;
+                    default:
+                        printf("Opsi tidak valid. Silakan coba lagi.\n");
+                }
             }
-
-            printf("-\t-\t-\t-\t-\t-\t-\t-\t-\t-\t-\t-\n");
-            break;
+            exit_submenu: break;
         }
-
+            
         // Punya Issa
         case 3:{
             char id_pasien[MAX_STR];
