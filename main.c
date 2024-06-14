@@ -143,7 +143,7 @@ RiwayatPasien *input_riwayat_pasien() {
     while (fgets(line, MAX_STR, stream)) {
         char tokenNomor[MAX_STR], tokenTanggal[MAX_STR], tokenID[MAX_STR], tokenDiagnosis[MAX_STR], tokenTindakan[MAX_STR], tokenKontrol[MAX_STR], tokenBiaya[MAX_STR];
         int nomor;
-        float biaya;
+        double biaya;
 
         strcpy(tokenNomor, strtok(line, ","));
         strcpy(tokenTanggal, strtok(NULL, ","));
@@ -162,6 +162,16 @@ RiwayatPasien *input_riwayat_pasien() {
     fclose(stream);
 
     return riwayat_pasien;
+}
+
+void print1(RiwayatPasien *head) {
+    RiwayatPasien *display = head;
+    while (display != NULL) {
+        if (display->indeksriwayat != 0) {
+            printf("%d. Tgl: %s \t|| Id: %s\t|| Diagnosis: %s\t|| Tindakan: %s\t|| Kontrol: %s\t|| Biaya: %lf\n", display->indeksriwayat, display->tanggal_kunjungan, display->id_pasien, display->diagnosis, display->tindakan, display->kontrol, display->biaya);
+        }
+        display = display->next;
+    }
 }
 
 void print(Pasien *head) {
@@ -352,48 +362,6 @@ void delete_csv_line(const char *filename, char id[]) {
 
 
 // -------------------------- FUNGSI BAGIAN ISSA ---------------------------------------------
-void trim_trailing_whitespace(char *str) {
-    char *end;
-    end = str + strlen(str) - 1;
-    while (end > str && isspace((unsigned char)*end)) {
-        end--;
-    }
-    end[1] = '\0';
-}
-
-int baca_csv_riwayat(const char *nama_file, RiwayatPasien **head) {
-    FILE *file = fopen(nama_file, "r");
-    if (file == NULL) {
-        printf("File tidak ditemukan.\n");
-        return 0;
-    }
-
-    char baris[MAX_STR];
-    fgets(baris, sizeof(baris), file);  // Membaca header
-    while (fgets(baris, sizeof(baris), file)) {
-        RiwayatPasien *riwayat = (RiwayatPasien*)malloc(sizeof(RiwayatPasien));
-        sscanf(baris, "%d,%19[^,],%49[^,],%99[^,],%99[^,],%19[^,],%lf",
-               &riwayat->indeksriwayat, riwayat->tanggal_kunjungan, riwayat->id_pasien,
-               riwayat->diagnosis, riwayat->tindakan, riwayat->kontrol, &riwayat->biaya);
-        riwayat->next = NULL;
-        
-        // Trim trailing whitespace
-        trim_trailing_whitespace(riwayat->id_pasien);
-
-        if (*head == NULL) {
-            *head = riwayat;
-        } else {
-            RiwayatPasien *temp = *head;
-            while (temp->next != NULL) {
-                temp = temp->next;
-            }
-            temp->next = riwayat;
-        }
-    }
-    fclose(file);
-    return 1;
-}
-
 void informasi_pasien(Pasien *head_pasien, char id_pasien[]) {
     Pasien *current = head_pasien;
     int found = 0;
@@ -402,7 +370,7 @@ void informasi_pasien(Pasien *head_pasien, char id_pasien[]) {
     while (current != NULL) {
         if (strcmp(current->id, id_pasien) == 0) {
             found = 1;
-            printf("%d. Nama: %s \t|| Alamat: %s\t|| Domisili: %s\t|| Lahir di: %s\t|| Tanggal Lahir: %s\t|| Umur: %d\t\t|| BPJS: %s\t|| ID: %s\n", current->no, current->nama, 
+            printf("%d. Nama: %s \t|| Alamat: %s\t|| Domisili: %s\t|| Lahir di: %s\t|| Tanggal Lahir: %s\t|| Umur: %d\t\t|| BPJS: %d\t|| ID: %s\n", current->no, current->nama, 
             current->alamat, current->kota, current->tempat_lahir, current->tanggal_lahir, current->umur, current->bpjs, current->id);
         }
         current = current->next;
@@ -413,7 +381,7 @@ void informasi_pasien(Pasien *head_pasien, char id_pasien[]) {
     }
 }
 
-void informasi_riwayat_pasien(RiwayatPasien *head_riwayat, const char *id_pasien) {
+void informasi_riwayat_pasien(RiwayatPasien *head_riwayat, char id_pasien[]) {
     RiwayatPasien *current = head_riwayat;
     int found = 0;
 
@@ -553,20 +521,20 @@ void start_program() {
             break;
         
         // Punya Issa
-        case 3:
+        case 3:{
             char id_pasien[MAX_STR];
-                printf("Masukkan ID Pasien: ");
-                fgets(id_pasien, MAX_STR, stdin);
-                id_pasien[strcspn(id_pasien, "\n")] = '\0';
+            printf("Masukkan ID Pasien: ");
+            fgets(id_pasien, MAX_STR, stdin);
+            id_pasien[strcspn(id_pasien, "\n")] = '\0';
 
-                // Display patient information
-                informasi_pasien(data_pasien, id_pasien);
+            // Display patient information
+            informasi_pasien(data_pasien, id_pasien);
 
-                // Display patient medical history
-                informasi_riwayat_pasien(riwayat_pasien, id_pasien);
-                break;
-
+            // Display patient medical history
+            informasi_riwayat_pasien(riwayat_pasien, id_pasien);
             break;
+        }
+        
         case 4:
 
             break;
@@ -589,6 +557,15 @@ void start_program() {
 
 int main() {
     start_program();
+    // Parsing data pasien
+    // Pasien *data_pasien = input_data_pasien();
+
+    // // Parsing data riwayat pasien
+    // RiwayatPasien *riwayat_pasien = input_riwayat_pasien();
+    // int opsi;
+
+    // print1(riwayat_pasien);
+    // print(data_pasien);
 
     return 0;
 }
