@@ -350,8 +350,172 @@ void delete_csv_line(const char *filename, char id[]) {
 }
 //-------------------------------------------------------------------------------------------
 
+// -------------------------- FUNGSI BAGIAN GASTYA ------------------------------------------
+void add_record() {
+    RiwayatPasien *new_record = (RiwayatPasien *)malloc(sizeof(RiwayatPasien));
+    if (new_record == NULL) {
+        printf("Tidak dapat mengalokasikan memori.\n");
+        return;
+    }
 
-// -------------------------- FUNGSI BAGIAN ISSA ---------------------------------------------
+    printf("Masukkan Indeks Riwayat: ");
+    scanf("%d", &new_record->indeksriwayat);
+    getchar();
+
+    printf("Masukkan Tanggal (DD Bulan YYYY): ");
+    fgets(new_record->tanggal_kunjungan, sizeof(new_record->tanggal_kunjungan), stdin);
+    new_record->tanggal_kunjungan[strcspn(new_record->tanggal_kunjungan, "\n")] = 0;
+    if (!validate_date(new_record->tanggal_kunjungan)) {
+        printf("Format tanggal tidak valid.\n");
+        free(new_record);
+        return;
+    }
+
+    printf("Masukkan ID Pasien: ");
+    fgets(new_record->id_pasien, sizeof(new_record->id_pasien), stdin);
+    new_record->id_pasien[strcspn(new_record->id_pasien, "\n")] = 0;
+
+    printf("Masukkan Diagnosis: ");
+    fgets(new_record->diagnosis, sizeof(new_record->diagnosis), stdin);
+    new_record->diagnosis[strcspn(new_record->diagnosis, "\n")] = 0;
+
+    printf("Masukkan Tindakan: ");
+    fgets(new_record->tindakan, sizeof(new_record->tindakan), stdin);
+    new_record->tindakan[strcspn(new_record->tindakan, "\n")] = 0;
+
+    printf("Masukkan Tanggal Kontrol (DD Bulan YYYY): ");
+    fgets(new_record->kontrol, sizeof(new_record->kontrol), stdin);
+    new_record->kontrol[strcspn(new_record->kontrol, "\n")] = 0;
+
+    printf("Masukkan Biaya: Rp");
+    scanf("%lf", &new_record->biaya);
+    getchar();
+
+    new_record->next = head;
+    head = new_record;
+
+    printf("Riwayat pasien berhasil ditambahkan.\n");
+}
+
+void update_record() {
+    char id_pasien[50];
+    char tanggal_kunjungan[20];
+    printf("Masukkan ID Pasien yang akan diubah: ");
+    fgets(id_pasien, sizeof(id_pasien), stdin);
+    id_pasien[strcspn(id_pasien, "\n")] = 0;
+
+    printf("Masukkan Tanggal Kunjungan (DD Bulan YYYY) yang akan diubah: ");
+    fgets(tanggal_kunjungan, sizeof(tanggal_kunjungan), stdin);
+    tanggal_kunjungan[strcspn(tanggal_kunjungan, "\n")] = 0;
+
+    RiwayatPasien *current = head;
+    while (current != NULL) {
+        if (strcmp(current->id_pasien, id_pasien) == 0 && strcmp(current->tanggal_kunjungan, tanggal_kunjungan) == 0) {
+            printf("Masukkan Tanggal Baru (DD Bulan YYYY): ");
+            fgets(current->tanggal_kunjungan, sizeof(current->tanggal_kunjungan), stdin);
+            current->tanggal_kunjungan[strcspn(current->tanggal_kunjungan, "\n")] = 0;
+            if (!validate_date(current->tanggal_kunjungan)) {
+                printf("Format tanggal tidak valid.\n");
+                return;
+            }
+
+            printf("Masukkan Diagnosis Baru: ");
+            fgets(current->diagnosis, sizeof(current->diagnosis), stdin);
+            current->diagnosis[strcspn(current->diagnosis, "\n")] = 0;
+
+            printf("Masukkan Tindakan Baru: ");
+            fgets(current->tindakan, sizeof(current->tindakan), stdin);
+            current->tindakan[strcspn(current->tindakan, "\n")] = 0;
+
+            printf("Masukkan Tanggal Kontrol Baru (DD Bulan YYYY): ");
+            fgets(current->kontrol, sizeof(current->kontrol), stdin);
+            current->kontrol[strcspn(current->kontrol, "\n")] = 0;
+            if (!validate_date(current->kontrol)) {
+                printf("Format tanggal kontrol tidak valid.\n");
+                return;
+            }
+
+            printf("Masukkan Biaya Baru: Rp");
+            scanf("%lf", &current->biaya);
+            getchar();
+
+            printf("Riwayat pasien berhasil diubah.\n");
+            return;
+        }
+        current = current->next;
+    }
+
+    printf("Tidak ada riwayat pasien yang cocok dengan ID dan tanggal tersebut.\n");
+}
+
+void delete_record() {
+    char id_pasien[50];
+    char tanggal_kunjungan[20];
+    printf("Masukkan ID Pasien yang akan dihapus: ");
+    fgets(id_pasien, sizeof(id_pasien), stdin);
+    id_pasien[strcspn(id_pasien, "\n")] = 0;
+
+    printf("Masukkan Tanggal Kunjungan (DD Bulan YYYY) yang akan dihapus: ");
+    fgets(tanggal_kunjungan, sizeof(tanggal_kunjungan), stdin);
+    tanggal_kunjungan[strcspn(tanggal_kunjungan, "\n")] = 0;
+
+    RiwayatPasien *current = head;
+    RiwayatPasien *previous = NULL;
+    while (current != NULL) {
+        if (strcmp(current->id_pasien, id_pasien) == 0 && strcmp(current->tanggal_kunjungan, tanggal_kunjungan) == 0) {
+            if (previous == NULL) {
+                head = current->next;
+            } else {
+                previous->next = current->next;
+            }
+            free(current);
+            printf("Riwayat pasien berhasil dihapus.\n");
+            return;
+        }
+        previous = current;
+        current = current->next;
+    }
+
+    printf("Tidak ada riwayat pasien yang cocok dengan ID dan tanggal tersebut.\n");
+}
+
+void search_record() {
+    char id_pasien[50];
+    printf("Masukkan ID Pasien yang akan dicari: ");
+    fgets(id_pasien, sizeof(id_pasien), stdin);
+    id_pasien[strcspn(id_pasien, "\n")] = 0;
+    printf("\n");
+
+    RiwayatPasien *current = head;
+    int found = 0;
+    while (current != NULL) {
+        if (strcmp(current->id_pasien, id_pasien) == 0) {
+            printf("Indeks: %d\nTanggal: %s\nID Pasien: %s\nDiagnosis: %s\nTindakan: %s\nTanggal Kontrol: %s\nBiaya: Rp%.2lf\n\n",
+                   current->indeksriwayat, current->tanggal_kunjungan, current->id_pasien, current->diagnosis, current->tindakan, current->kontrol, current->biaya);
+            found = 1;
+        }
+        current = current->next;
+    }
+
+    if (!found) {
+        printf("Tidak ada riwayat pasien yang cocok dengan ID tersebut.\n");
+    }
+}
+
+int validate_date(const char *date) {
+    char day[3], month[10], year[5];
+    if (sscanf(date, "%2s %9s %4s", day, month, year) != 3) {
+        return 0;
+    }
+    int day_num = atoi(day);
+    if (day_num < 1 || day_num > 31) {
+        return 0;
+    }
+    return 1;
+}
+//-------------------------------------------------------------------------------------------
+
+// -------------------------- FUNGSI BAGIAN ISSA --------------------------------------------
 void trim_trailing_whitespace(char *str) {
     char *end;
     end = str + strlen(str) - 1;
@@ -548,9 +712,27 @@ void start_program() {
         }
 
         // Punya gastya
-        case 2:
-            
+        case 2: {
+            char choice2[MAX_STR];
+            printf("Apa yang ingin anda sunting (tambah/ubah/hapus/cari)?\n");
+            printf(">> ");
+            fgets(choice2, MAX_STR, stdin);
+            choice2[strcspn(choice2, "\n")] = '\0';  // Remove the newline character
+
+            if (strcmp(choice2, "tambah") == 0) {
+                add_record();
+            } else if (strcmp(choice2, "ubah") == 0) {
+                update_record();
+            } else if (strcmp(choice2, "hapus") == 0) {
+                delete_record();
+            } else if (strcmp(choice2, "cari") == 0) {
+                search_record();
+            } else {
+                printf("Pilihan tidak valid.\n");
+            }
+            printf("-\t-\t-\t-\t-\t-\t-\t-\t-\t-\t-\t-\n");
             break;
+        }
         
         // Punya Issa
         case 3:
