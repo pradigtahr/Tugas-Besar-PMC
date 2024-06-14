@@ -164,26 +164,6 @@ RiwayatPasien *input_riwayat_pasien() {
     return riwayat_pasien;
 }
 
-void print1(RiwayatPasien *head) {
-    RiwayatPasien *display = head;
-    while (display != NULL) {
-        if (display->indeksriwayat != 0) {
-            printf("%d. Tgl: %s \t|| Id: %s\t|| Diagnosis: %s\t|| Tindakan: %s\t|| Kontrol: %s\t|| Biaya: %lf\n", display->indeksriwayat, display->tanggal_kunjungan, display->id_pasien, display->diagnosis, display->tindakan, display->kontrol, display->biaya);
-        }
-        display = display->next;
-    }
-}
-
-void print(Pasien *head) {
-    Pasien *display = head;
-    while (display != NULL) {
-        if (display->no != 0) {
-            printf("%d. Nama: %s \t|| Alamat: %s\t|| Domisili: %s\t|| Lahir di: %s\t|| Tanggal Lahir: %s\t|| Umur: %d\t\t|| BPJS: %d\t|| ID: %s\n", display->no, display->nama, display->alamat, display->kota, display->tempat_lahir, display->tanggal_lahir, display->umur, display->bpjs, display->id);
-        }
-        display = display->next;
-    }
-}
-
 void header(void){
     printf("-\t-\t-\t-\t-\t-\t-\t-\t-\t-\t-\t-\n");
     printf("TUGAS BESAR\n");
@@ -243,25 +223,115 @@ void get_patient_data(int *nomor, char nama[], char alamat[], char kota[], char 
 
     printf("Masukkan nomor BPJS: ");
     scanf("%d", bpjs);
-    getchar();  // To consume the newline character left by scanf
+    getchar();
 
     printf("Masukkan ID pasien: ");
     fgets(id, MAX_STR, stdin);
     id[strcspn(id, "\n")] = '\0';
 }
 
-Pasien *find_patient_by_id(Pasien *head, char id[]) {
+void get_patient_data2(int *nomor, char nama[], char alamat[], char kota[], char tempatLahir[], char tanggalLahir[], int *umur, int *bpjs) {
+    printf("Masukkan nomor pasien: ");
+    scanf("%d", nomor);
+    getchar();
+
+    printf("Masukkan nama lengkap: ");
+    fgets(nama, MAX_STR, stdin);
+    nama[strcspn(nama, "\n")] = '\0';
+
+    printf("Masukkan alamat: ");
+    fgets(alamat, MAX_STR, stdin);
+    alamat[strcspn(alamat, "\n")] = '\0';
+
+    printf("Masukkan kota: ");
+    fgets(kota, MAX_STR, stdin);
+    kota[strcspn(kota, "\n")] = '\0';
+
+    printf("Masukkan tempat lahir: ");
+    fgets(tempatLahir, MAX_STR, stdin);
+    tempatLahir[strcspn(tempatLahir, "\n")] = '\0';
+
+    printf("Masukkan tanggal lahir (<Tanggal>, <Bulan> <Tahun>): ");
+    fgets(tanggalLahir, MAX_STR, stdin);
+    tanggalLahir[strcspn(tanggalLahir, "\n")] = '\0';
+
+    printf("Masukkan umur: ");
+    scanf("%d", umur);
+
+    printf("Masukkan nomor BPJS: ");
+    scanf("%d", bpjs);
+    getchar();
+}
+
+Pasien createNode(int nomor, char nama[], char alamat[], char kota[], char tempatLahir[], char tanggalLahir[], int umur, int bpjs, char id[]) {
+    Pasien updated_patient;
+    updated_patient.no = nomor;
+    strcpy(updated_patient.nama, nama);
+    strcpy(updated_patient.alamat, alamat);
+    strcpy(updated_patient.kota, kota);
+    strcpy(updated_patient.tempat_lahir, tempatLahir);
+    strcpy(updated_patient.tanggal_lahir, tanggalLahir);
+    updated_patient.umur = umur;
+    updated_patient.bpjs = bpjs;
+    strcpy(updated_patient.id, id);
+
+    return updated_patient;
+}
+
+void print(Pasien *head, char id[]) {
+    Pasien *display = head;
+    int found = 0;
+    while (display != NULL) {
+        if (strcmp(display->id, id) == 0) {
+            found = 1;
+            printf("%d. Nama: %s \t|| Alamat: %s\t|| Domisili: %s\t|| Lahir di: %s\t|| Tanggal Lahir: %s\t|| Umur: %d\t\t|| BPJS: %d\t|| ID: %s\n", display->no, display->nama, display->alamat, display->kota, display->tempat_lahir, display->tanggal_lahir, display->umur, display->bpjs, display->id);
+        }
+        display = display->next;
+    }
+
+    if (!found){
+        printf("Tidak ada pasien dengan ID tersebut.\n");
+    }
+}
+
+int search_id(Pasien *head,  char id[]){
+    Pasien *display = head;
+    int found = 0;
+    while (display != NULL) {
+        if (strcmp(display->id, id) == 0) {
+            found = 1;
+            return 1;
+        }
+        display = display->next;
+    }
+
+    if (!found){
+        return 0;
+    }
+}
+
+// Fungsi untuk update linked list
+void update_linked_list(Pasien *head, Pasien updated_patient) {
     Pasien *current = head;
     while (current != NULL) {
-        if (strcmp(current->id, id) == 0) {
-            return current;
+        if (strcmp(current->id, updated_patient.id) == 0) {
+            // Update the patient data in the linked list
+            current->no = updated_patient.no;
+            strcpy(current->nama, updated_patient.nama);
+            strcpy(current->alamat, updated_patient.alamat);
+            strcpy(current->kota, updated_patient.kota);
+            strcpy(current->tempat_lahir, updated_patient.tempat_lahir);
+            strcpy(current->tanggal_lahir, updated_patient.tanggal_lahir);
+            current->umur = updated_patient.umur;
+            current->bpjs = updated_patient.bpjs;
+            break;
         }
         current = current->next;
     }
-    return NULL;
 }
 
-void update_csv(const char *filename, char id[], Pasien updated_patient) {
+// Fungsi untuk update file csv
+void update_csv_and_list(Pasien *head, const char *filename, char id[], Pasien updated_patient) {
     FILE *file = fopen(filename, "r");
     if (!file) {
         perror("Error opening file");
@@ -278,21 +348,23 @@ void update_csv(const char *filename, char id[], Pasien updated_patient) {
     char line[MAX_STR];
     char temp_id[MAX_STR];
     int updated = 0;
-
-    // Read header line and write it to the temporary file
-    if (fgets(line, sizeof(line), file)) {
-        fputs(line, tempfile);
-    }
+    int first_line = 1;
 
     while (fgets(line, sizeof(line), file)) {
+        // Ekstrak id saat ini
         sscanf(line, "%*d,%*[^,],%*[^,],%*[^,],%*[^,],%*[^,],%*d,%*d,%[^,\n]", temp_id);
 
+        // Tulis ke dalam file data yang baru
         if (strcmp(temp_id, id) == 0) {
-            fprintf(tempfile, "%d,%s,%s,%s,%s,%s,%d,%d,%s", updated_patient.no, updated_patient.nama, updated_patient.alamat, updated_patient.kota, updated_patient.tempat_lahir, updated_patient.tanggal_lahir, updated_patient.umur, updated_patient.bpjs, updated_patient.id);
+            fprintf(tempfile, "%d,%s,%s,%s,%s,%s,%d,%d,%s\n", updated_patient.no, updated_patient.nama, updated_patient.alamat, 
+            updated_patient.kota, updated_patient.tempat_lahir, updated_patient.tanggal_lahir, updated_patient.umur, 
+            updated_patient.bpjs, updated_patient.id);
             updated = 1;
         } else {
             fputs(line, tempfile);
         }
+
+        first_line = 0;
     }
 
     fclose(file);
@@ -301,67 +373,81 @@ void update_csv(const char *filename, char id[], Pasien updated_patient) {
     if (updated) {
         remove(filename);
         rename("temp.csv", filename);
+        update_linked_list(head, updated_patient);
         printf("Data pasien dengan ID %s berhasil diubah.\n", id);
-    } else {
-        remove(filename);
-        rename("temp.csv", filename);
-        printf("Data pasien dengan ID %s tidak ditemukan.\n", id);
-    }
-}
-
-
-
-void delete_csv_line(const char *filename, char id[]) {
-    FILE *file = fopen(filename, "r");
-    if (!file) {
-        perror("Error opening file");
-        return;
-    }
-
-    FILE *tempfile = fopen("temp.csv", "w");
-    if (!tempfile) {
-        perror("Error opening temporary file");
-        fclose(file);
-        return;
-    }
-
-    char line[MAX_STR];
-    char temp_id[MAX_STR];
-    int deleted = 0;
-
-    // Read header line and write it to the temporary file
-    if (fgets(line, sizeof(line), file)) {
-        fputs(line, tempfile);
-    }
-
-    while (fgets(line, sizeof(line), file)) {
-        sscanf(line, "%*d,%*[^,],%*[^,],%*[^,],%*[^,],%*[^,],%*d,%*d,%[^,\n]", temp_id);
-
-        if (strcmp(temp_id, id) == 0) {
-            deleted = 1;
-            continue; // Skip writing this line to the temporary file
-        }
-
-        fputs(line, tempfile);
-    }
-
-    fclose(file);
-    fclose(tempfile);
-
-    // Replace the original file with the updated file
-    if (deleted) {
-        remove(filename);
-        rename("temp.csv", filename);
-        printf("Data pasien dengan ID %s berhasil dihapus.\n", id);
     } else {
         remove("temp.csv");
         printf("Data pasien dengan ID %s tidak ditemukan.\n", id);
     }
 }
-//-------------------------------------------------------------------------------------------
 
+void delete_patient(Pasien **head, const char *filename, char id[]) {
+    Pasien *prev = NULL;
+    Pasien *current = *head;
+    int found = 0;
 
-// -------------------------- FUNGSI BAGIAN ISSA ---------------------------------------------
+    // hapus dari linked list
+    while (current != NULL) {
+        if (strcmp(current->id, id) == 0) {
+            found = 1;
+            if (prev == NULL) {
+                *head = current->next;
+            } else {
+                prev->next = current->next;
+            }
+            free(current);
+            break;
+        }
+        prev = current;
+        current = current->next;
+    }
+
+    // hapus dari file
+    if (found) {
+        FILE *file = fopen(filename, "r");
+        if (!file) {
+            perror("Error opening file");
+            return;
+        }
+
+        FILE *tempfile = fopen("temp.csv", "w");
+        if (!tempfile) {
+            perror("Error opening temporary file");
+            fclose(file);
+            return;
+        }
+
+        char line[MAX_STR];
+        char temp_id[MAX_STR];
+
+        while (fgets(line, sizeof(line), file)) {
+            sscanf(line, "%*d,%*[^,],%*[^,],%*[^,],%*[^,],%*[^,],%*d,%*d,%[^,\n]", temp_id);
+
+            if (strcmp(temp_id, id) == 0) {
+                continue; // line dengan id spesifik dihapus/dilewati
+            }
+
+            else (fputs(line, tempfile));
+        }
+
+        fclose(file);
+        fclose(tempfile);
+
+        // Tukar file original dengan file yang sudah diperbaharui
+        remove(filename);
+        rename("temp.csv", filename);
+        printf("Data pasien dengan ID %s berhasil dihapus.\n", id);
+
+    } else {
+        printf("Pasien dengan ID %s tidak ditemukan file.\n", id);
+    }
+}
+//---------------------------------------------------------------------------------------------
+
+// -------------------------- FUNGSI BAGIAN GASTYA --------------------------------------------
+// --------------------------------------------------------------------------------------------
+
+// -------------------------- FUNGSI BAGIAN ISSA ----------------------------------------------
 void informasi_pasien(Pasien *head_pasien, char id_pasien[]) {
     Pasien *current = head_pasien;
     int found = 0;
@@ -401,6 +487,15 @@ void informasi_riwayat_pasien(RiwayatPasien *head_riwayat, char id_pasien[]) {
 }
 // --------------------------------------------------------------------------------------------
 
+// -------------------------- FUNGSI BAGIAN MUTI ----------------------------------------------
+// --------------------------------------------------------------------------------------------
+
+// -------------------------- FUNGSI BAGIAN YAZID ---------------------------------------------
+// --------------------------------------------------------------------------------------------
+
+// -------------------------- FUNGSI BAGIAN BENNY ---------------------------------------------
+// --------------------------------------------------------------------------------------------
+
 void start_program() {
     // Parsing data pasien
     Pasien *data_pasien = input_data_pasien();
@@ -411,8 +506,8 @@ void start_program() {
 
     do {
         header();
-        printf("1. Sunting data pasien\n");
-        printf("2. Sunting riwayat, diagnosis, dan tindakan pada pasien\n");
+        printf("1. Sunting/Cari data pasien\n");
+        printf("2. Sunting/Cari riwayat, diagnosis, dan tindakan pada pasien\n");
         printf("3. Cek informasi dan riwayat medis pasien\n");
         printf("4. Cek pendapatan bulanan, tahunan, dan rata-rata pendapatan per-tahun\n");
         printf("5. Cek jumlah pasien dan penyakit yang diderita pasien\n");
@@ -439,87 +534,65 @@ void start_program() {
                 get_patient_data(&nomor, nama, alamat, kota, tempatLahir, tanggalLahir, &umur, &bpjs, id);
                 add_new_patient(&data_pasien, nomor, nama, alamat, kota, tempatLahir, tanggalLahir, umur, bpjs, id);
                 printf("Pasien baru telah ditambahkan.\n");
+
             } else if (strcmp(choice1, "ubah") == 0) {
                 char id[MAX_STR];
+                int found;
+
+                // input id pasien
                 printf("Masukkan ID pasien yang ingin diubah: ");
                 fgets(id, MAX_STR, stdin);
                 id[strcspn(id, "\n")] = '\0';
 
-                Pasien *patient_to_update = find_patient_by_id(data_pasien, id);
-                if (patient_to_update) {
+                // cari id
+                found = search_id(data_pasien, id);
+
+                if (found) {
+                    // Mendapatkan data-data dari pasien yang diperbaharui
                     int nomor, umur, bpjs;
                     char nama[MAX_STR], alamat[MAX_STR], kota[MAX_STR], tempatLahir[MAX_STR], tanggalLahir[MAX_STR];
-                    get_patient_data(&nomor, nama, alamat, kota, tempatLahir, tanggalLahir, &umur, &bpjs, id);
+                    get_patient_data2(&nomor, nama, alamat, kota, tempatLahir, tanggalLahir, &umur, &bpjs);
 
-                    patient_to_update->no = nomor;
-                    strcpy(patient_to_update->nama, nama);
-                    strcpy(patient_to_update->alamat, alamat);
-                    strcpy(patient_to_update->kota, kota);
-                    strcpy(patient_to_update->tempat_lahir, tempatLahir);
-                    strcpy(patient_to_update->tanggal_lahir, tanggalLahir);
-                    patient_to_update->umur = umur;
-                    patient_to_update->bpjs = bpjs;
-                    strcpy(patient_to_update->id, id);
+                    // Membuat node baru sebagai elemen linked list yang diubah
+                    Pasien updatedPatient = createNode(nomor, nama, alamat, kota, tempatLahir, tanggalLahir, umur, bpjs, id);
 
-                    update_csv("DataPasien.csv", id, *patient_to_update);
+                    // Update file csv DataPasien dan linked list
+                    update_csv_and_list(data_pasien, "DataPasien.csv", id, updatedPatient);
+                    
+
                 } else {
                     printf("Pasien dengan ID %s tidak ditemukan.\n", id);
                 }
+            
             } else if (strcmp(choice1, "hapus") == 0) {
                 char id[MAX_STR];
                 printf("Masukkan ID pasien yang ingin dihapus: ");
                 fgets(id, MAX_STR, stdin);
                 id[strcspn(id, "\n")] = '\0';
 
-                Pasien *prev = NULL;
-                Pasien *current = data_pasien;
-                while (current != NULL) {
-                    if (strcmp(current->id, id) == 0) {
-                        if (prev == NULL) {
-                            data_pasien = current->next;
-                        } else {
-                            prev->next = current->next;
-                        }
-                        free(current);
-                        delete_csv_line("DataPasien.csv", id);
-                        break;
-                    }
-                    prev = current;
-                    current = current->next;
-                }
+                delete_patient(&data_pasien, "DataPasien.csv", id);
+            
             } else if (strcmp(choice1, "cari") == 0) {
                 char id[MAX_STR];
+                // input id pasien
                 printf("Masukkan ID pasien yang ingin dicari: ");
                 fgets(id, MAX_STR, stdin);
                 id[strcspn(id, "\n")] = '\0';
-
-                Pasien *patient = find_patient_by_id(data_pasien, id);
-                if (patient) {
-                    printf("Pasien ditemukan:\n");
-                    printf("ID: %s\n", patient->id);
-                    printf("Nama: %s\n", patient->nama);
-                    printf("Alamat: %s\n", patient->alamat);
-                    printf("Kota: %s\n", patient->kota);
-                    printf("Tempat Lahir: %s\n", patient->tempat_lahir);
-                    printf("Tanggal Lahir: %s\n", patient->tanggal_lahir);
-                    printf("Umur: %d\n", patient->umur);
-                    printf("BPJS: %d\n", patient->bpjs);
-                    printf("Nomor: %d\n", patient->no);
-                } else {
-                    printf("Pasien dengan ID %s tidak ditemukan.\n", id);
-                }
+                
+                // Cari pasien
+                print(data_pasien, id);
             } else {
                 printf("Input tidak valid!\n");
             }
-            printf("-\t-\t-\t-\t-\t-\t-\t-\t-\t-\t-\t-\n");
             break;
         }
 
         // Punya gastya
-        case 2:
+        case 2:{
             
             break;
-        
+        }
+            
         // Punya Issa
         case 3:{
             char id_pasien[MAX_STR];
@@ -535,15 +608,21 @@ void start_program() {
             break;
         }
         
-        case 4:
-
+        case 4:{
+            
             break;
-        case 5:
+        }
 
+        case 5:{
+            
             break;
-        case 6:
+        }
 
+        case 6:{
+            
             break;
+        }
+
         case 7:
             printf("Keluar dari program...");
             break;
@@ -565,7 +644,7 @@ int main() {
     // int opsi;
 
     // print1(riwayat_pasien);
-    // print(data_pasien);
+    // print1(data_pasien);
 
     return 0;
-}
+}   
