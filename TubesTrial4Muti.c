@@ -2,14 +2,19 @@
 #include <stdlib.h>
 #include <string.h>
 
+#define MAX_STR 50
+
 // Struktur untuk menyimpan data pasien
-typedef struct Pasien {
-    int no;
-    char tanggal[20];
-    char idPasien[20];
-    char diagnosis[50];
-    struct Pasien *next;
-} Pasien;
+typedef struct RiwayatPasien {
+    int indeksriwayat;
+    char tanggal_kunjungan[MAX_STR];
+    char id_pasien[MAX_STR];
+    char diagnosis[MAX_STR];
+    char tindakan[MAX_STR];
+    char kontrol[MAX_STR];
+    double biaya;
+    struct RiwayatPasien *next;
+} RiwayatPasien;
 
 // Struktur untuk menyimpan data hitungan
 typedef struct CountData {
@@ -27,24 +32,27 @@ typedef struct YearlyData {
 } YearlyData;
 
 // Fungsi untuk membuat node pasien baru
-Pasien* createPatient(int no, char* tanggal, char* idPasien, char* diagnosis) {
-    Pasien* newPasien = (Pasien*)malloc(sizeof(Pasien));
-    newPasien->no = no;
-    strcpy(newPasien->tanggal, tanggal);
-    strcpy(newPasien->idPasien, idPasien);
+RiwayatPasien* createPatient(int indeksriwayat, char* tanggal_kunjungan, char* id_pasien, char* diagnosis, char* tindakan, char* kontrol, double biaya) {
+    RiwayatPasien* newPasien = (RiwayatPasien*)malloc(sizeof(RiwayatPasien));
+    newPasien->indeksriwayat = indeksriwayat;
+    strcpy(newPasien->tanggal_kunjungan, tanggal_kunjungan);
+    strcpy(newPasien->id_pasien, id_pasien);
     strcpy(newPasien->diagnosis, diagnosis);
+    strcpy(newPasien->tindakan, tindakan);
+    strcpy(newPasien->kontrol, kontrol);
+    newPasien->biaya = biaya;
     newPasien->next = NULL;
     return newPasien;
 }
 
 // Fungsi untuk menyisipkan pasien
-void insertPatient(Pasien** head, int no, char* tanggal, char* idPasien, char* diagnosis) {
-    Pasien* newPasien = createPatient(no, tanggal, idPasien, diagnosis);
+void insertPatient(RiwayatPasien** head, int indeksriwayat, char* tanggal_kunjungan, char* id_pasien, char* diagnosis, char* tindakan, char* kontrol, double biaya) {
+    RiwayatPasien* newPasien = createPatient(indeksriwayat, tanggal_kunjungan, id_pasien, diagnosis, tindakan, kontrol, biaya);
     if (*head == NULL) {
         *head = newPasien;
         return;
     }
-    Pasien* temp = *head;
+    RiwayatPasien* temp = *head;
     while (temp->next != NULL) {
         temp = temp->next;
     }
@@ -52,14 +60,14 @@ void insertPatient(Pasien** head, int no, char* tanggal, char* idPasien, char* d
 }
 
 // Fungsi untuk mengekstrak tahun dari string tanggal
-int extractYear(char* tanggal) {
+int extractYear(char* tanggal_kunjungan) {
     int year;
-    sscanf(tanggal + strlen(tanggal) - 4, "%d", &year);
+    sscanf(tanggal_kunjungan + strlen(tanggal_kunjungan) - 4, "%d", &year);
     return year;
 }
 
 // Fungsi untuk menghitung pasien dan diagnosis per bulan dan tahun
-void countPatients(Pasien* head, CountData* countData, int* totalRecords, YearlyData* yearlyData, int* totalYears) {
+void countPatients(RiwayatPasien* head, CountData* countData, int* totalRecords, YearlyData* yearlyData, int* totalYears) {
     char months[12][20] = {"Januari", "Februari", "Maret", "April", "Mei", "Juni", 
                            "Juli", "Agustus", "September", "Oktober", "November", "Desember"};
 
@@ -68,11 +76,11 @@ void countPatients(Pasien* head, CountData* countData, int* totalRecords, Yearly
     *totalRecords = 0;
     *totalYears = 0;
 
-    Pasien* temp = head;
+    RiwayatPasien* temp = head;
     while (temp != NULL) {
-        int year = extractYear(temp->tanggal);
+        int year = extractYear(temp->tanggal_kunjungan);
         for (int i = 0; i < 12; i++) {
-            if (strstr(temp->tanggal, months[i]) != NULL) {
+            if (strstr(temp->tanggal_kunjungan, months[i]) != NULL) {
                 if (monthIndex[i][year - 2000] == 0) {  // Assumsi tahun dari 2000
                     strcpy(countData[*totalRecords].month, months[i]);
                     countData[*totalRecords].year = year;
@@ -124,8 +132,8 @@ void bubbleSortYearlyData(YearlyData* data, int n) {
 }
 
 // Fungsi untuk mengosongkan memori yang dialokasikan untuk linked list
-void freePatients(Pasien* head) {
-    Pasien* temp;
+void freePatients(RiwayatPasien* head) {
+    RiwayatPasien* temp;
     while (head != NULL) {
         temp = head;
         head = head->next;
@@ -140,15 +148,16 @@ int main() {
         return 1;
     }
 
-    Pasien* head = NULL;
-    char line[200];
+    RiwayatPasien* head = NULL;
+    char line[300];
     fgets(line, sizeof(line), file);  // Skip header line
 
     while (fgets(line, sizeof(line), file)) {
-        int no;
-        char tanggal[20], idPasien[20], diagnosis[50];
-        sscanf(line, "%d,%[^,],%[^,],%[^,]", &no, tanggal, idPasien, diagnosis);
-        insertPatient(&head, no, tanggal, idPasien, diagnosis);
+        int indeksriwayat;
+        char tanggal_kunjungan[MAX_STR], id_pasien[MAX_STR], diagnosis[MAX_STR], tindakan[MAX_STR], kontrol[MAX_STR];
+        double biaya;
+        sscanf(line, "%d,%[^,],%[^,],%[^,],%[^,],%[^,],%lf", &indeksriwayat, tanggal_kunjungan, id_pasien, diagnosis, tindakan, kontrol, &biaya);
+        insertPatient(&head, indeksriwayat, tanggal_kunjungan, id_pasien, diagnosis, tindakan, kontrol, biaya);
     }
 
     fclose(file);
