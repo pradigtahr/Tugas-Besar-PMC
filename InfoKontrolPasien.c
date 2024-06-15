@@ -70,7 +70,7 @@ void cariKontrol(const char *id_pasien, Pasien *data, int count) {
     int found = 0;
     for (int i = 0; i < count; i++) {
         if (strcmp(data[i].id_pasien, id_pasien) == 0) {
-            printf("No: %d\nTanggal: %s\nDiagnosis: %s\nTindakan: %s\nKontrol: %s\nBiaya: %d\n\n",
+            printf("No: %d\nTanggal Periksa: %s\nDiagnosis: %s\nTindakan: %s\nKontrol: %s\nBiaya: %d\n\n",
                    data[i].no, data[i].tanggal, data[i].diagnosis, data[i].tindakan, data[i].kontrol, data[i].biaya);
             found = 1;
         }
