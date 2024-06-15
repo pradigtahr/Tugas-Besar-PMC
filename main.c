@@ -808,13 +808,172 @@ void informasi_riwayat_pasien(RiwayatPasien *head_riwayat, char id_pasien[]) {
 }
 // --------------------------------------------------------------------------------------------
 
-// -------------------------- FUNGSI BAGIAN MUTI ----------------------------------------------
+// -------------------------- FUNGSI BAGIAN 4 ----------------------------------------------
+int get_month_number(char month_name[]) {
+    if (strcmp(month_name, "Januari") == 0) return 1;
+    if (strcmp(month_name, "Februari") == 0) return 2;
+    if (strcmp(month_name, "Maret") == 0) return 3;
+    if (strcmp(month_name, "April") == 0) return 4;
+    if (strcmp(month_name, "Mei") == 0) return 5;
+    if (strcmp(month_name, "Juni") == 0) return 6;
+    if (strcmp(month_name, "Juli") == 0) return 7;
+    if (strcmp(month_name, "Agustus") == 0) return 8;
+    if (strcmp(month_name, "September") == 0) return 9;
+    if (strcmp(month_name, "Oktober") == 0) return 10;
+    if (strcmp(month_name, "November") == 0) return 11;
+    if (strcmp(month_name, "Desember") == 0) return 12;
+    return 0;
+}
+
+void hitung_pendapatan(RiwayatPasien *head_riwayat) {
+    double pendapatan_bulanan[12] = {0};
+    double pendapatan_tahunan = 0;
+    RiwayatPasien *current = head_riwayat;
+
+    while (current != NULL) {
+        int hari, tahun;
+        char bulan_str[20];
+        sscanf(current->tanggal_kunjungan, "%d %19s %d", &hari, bulan_str, &tahun);
+        int bulan = get_month_number(bulan_str);
+
+        pendapatan_bulanan[bulan - 1] += current->biaya;
+        pendapatan_tahunan += current->biaya;
+        current = current->next;
+    }
+
+    printf("\nPendapatan Bulanan:\n");
+    for (int i = 0; i < 12; i++) {
+        printf("Bulan %d: Rp.%.2f\n", i + 1, pendapatan_bulanan[i]);
+    }
+    printf("\nPendapatan Tahunan: Rp.%.2f\n", pendapatan_tahunan);
+}
+
+void rata_rata_pendapatan_tahunan(RiwayatPasien *head_riwayat) {
+    double total_pendapatan = 0;
+    int tahun_pertama = 0, tahun_terakhir = 0;
+    int jumlah_tahun = 0;
+    RiwayatPasien *current = head_riwayat;
+
+    while (current != NULL) {
+        int hari, tahun;
+        char bulan_str[20];
+        sscanf(current->tanggal_kunjungan, "%d %19s %d", &hari, bulan_str, &tahun);
+        total_pendapatan += current->biaya;
+
+        if (tahun_pertama == 0 || tahun < tahun_pertama) {
+            tahun_pertama = tahun;
+        }
+        if (tahun > tahun_terakhir) {
+            tahun_terakhir = tahun;
+        }
+
+        current = current->next;
+    }
+
+    jumlah_tahun = tahun_terakhir - tahun_pertama + 1;
+    double rata_rata_tahunan = total_pendapatan / jumlah_tahun;
+
+    printf("\nRata-rata Pendapatan Tahunan: Rp.%.2f\n", rata_rata_tahunan);
+}
 // --------------------------------------------------------------------------------------------
 
-// -------------------------- FUNGSI BAGIAN YAZID ---------------------------------------------
+// -------------------------- FUNGSI BAGIAN MUTI ---------------------------------------------
+// Struktur untuk menyimpan data hitungan
+typedef struct CountData {
+    char month[MAX_STR];
+    int year;
+    int patientCount;
+    char diagnoses[MAX_STR][MAX_STR];
+    int diagCount;
+} CountData;
+
+// Struktur untuk menyimpan data tahunan
+typedef struct YearlyData {
+    int year;
+    int totalPatients;
+} YearlyData;
+
+// Fungsi untuk mengekstrak tahun dari string tanggal
+int extractYear(char* tanggal) {
+    int year;
+    sscanf(tanggal + strlen(tanggal) - 4, "%d", &year);
+    return year;
+}
+
+// Fungsi untuk menghitung pasien dan diagnosis per bulan dan tahun
+void countPatients(RiwayatPasien* head, CountData* countData, int* totalRecords, YearlyData* yearlyData, int* totalYears) {
+    char months[12][20] = {"Januari", "Februari", "Maret", "April", "Mei", "Juni", 
+                            "Juli", "Agustus", "September", "Oktober", "November", "Desember"};
+
+    int monthIndex[12][100] = {0};  
+    int yearIndex[100] = {0};
+    *totalRecords = 0;
+    *totalYears = 0;
+
+    RiwayatPasien* temp = head;
+    while (temp != NULL) {
+        int year = extractYear(temp->tanggal_kunjungan);
+        for (int i = 0; i < 12; i++) {
+            if (strstr(temp->tanggal_kunjungan, months[i]) != NULL) {
+                if (monthIndex[i][year - 2000] == 0) {  // Assumsi tahun dari 2000
+                    strcpy(countData[*totalRecords].month, months[i]);
+                    countData[*totalRecords].year = year;
+                    monthIndex[i][year - 2000] = *totalRecords + 1;
+                    (*totalRecords)++;
+                }
+                countData[monthIndex[i][year - 2000] - 1].patientCount++;
+                strcpy(countData[monthIndex[i][year - 2000] - 1].diagnoses[countData[monthIndex[i][year - 2000] - 1].diagCount], temp->diagnosis);
+                countData[monthIndex[i][year - 2000] - 1].diagCount++;
+                break;
+            }
+        }
+        
+        if (yearIndex[year - 2000] == 0) {
+            yearlyData[*totalYears].year = year;
+            yearIndex[year - 2000] = *totalYears + 1;
+            (*totalYears)++;
+        }
+        yearlyData[yearIndex[year - 2000] - 1].totalPatients++;
+        
+        temp = temp->next;
+    }
+}
+
+// Fungsi untuk membandingkan dua struktur CountData untuk pengurutan
+int compare(const void* a, const void* b) {
+    CountData* dataA = (CountData*)a;
+    CountData* dataB = (CountData*)b;
+    return dataB->patientCount - dataA->patientCount;
+}
+
+// Fungsi untuk membandingkan dua struktur YearlyData untuk pengurutan
+int compareYearly(const void* a, const void* b) {
+    YearlyData* dataA = (YearlyData*)a;
+    YearlyData* dataB = (YearlyData*)b;
+    return dataA->year - dataB->year;
+}
+
 // --------------------------------------------------------------------------------------------
 
-// -------------------------- FUNGSI BAGIAN BENNY ---------------------------------------------
+// -------------------------- FUNGSI BAGIAN 6 ---------------------------------------------
+void cariKontrol(const char *id_pasien, RiwayatPasien *data) {
+    RiwayatPasien *current = data;
+    int found = 0;
+
+    printf("\nInformasi kontrol untuk pasien dengan ID %s:\n", id_pasien);
+    while (current != NULL) {
+        if (strcmp(current->id_pasien, id_pasien) == 0) {
+            printf("No: %d\nTanggal: %s\nDiagnosis: %s\nTindakan: %s\nKontrol: %s\nBiaya: %.2lf\n\n",
+                    current->indeksriwayat, current->tanggal_kunjungan, current->diagnosis, current->tindakan, 
+                    current->kontrol, current->biaya);
+            found = 1;
+        }
+        current = current->next;
+    }
+    if (!found) {
+        printf("Pasien dengan ID %s tidak ditemukan.\n", id_pasien);
+    }
+}
 // --------------------------------------------------------------------------------------------
 
 void start_program() {
@@ -961,17 +1120,47 @@ void start_program() {
         }
         
         case 4:{
-            
+            hitung_pendapatan(riwayat_pasien);
+            rata_rata_pendapatan_tahunan(riwayat_pasien);
+
             break;
         }
 
         case 5:{
-            
+            CountData countData[120] = {0};
+            YearlyData yearlyData[100] = {0};  
+            int totalRecords = 0;
+            int totalYears = 0;
+            countPatients(riwayat_pasien, countData, &totalRecords, yearlyData, &totalYears);
+
+            qsort(countData, totalRecords, sizeof(CountData), compare);
+            qsort(yearlyData, totalYears, sizeof(YearlyData), compareYearly);
+
+            // Output hasil 
+            for (int i = 0; i < totalRecords; i++) {
+                printf("Bulan dan Tahun     : %s %d\n", countData[i].month, countData[i].year);
+                printf("Jumlah Pasien       : %d\n", countData[i].patientCount);
+                printf("Diagnosis Penyakit  : \n");
+                for (int j = 0; j < countData[i].diagCount; j++) {
+                    printf(" - %s\n", countData[i].diagnoses[j]);
+                }
+                printf("\n");
+            }
+
+            // Total Pasien tiap Tahun
+            for (int i = 0; i < totalYears; i++) {
+                printf("Tahun: %d, Total Jumlah Pasien: %d\n", yearlyData[i].year, yearlyData[i].totalPatients);
+            }
             break;
         }
 
         case 6:{
-            
+            char id_pasien[MAX_STR];
+            printf("Masukkan ID Pasien: ");
+            fgets(id_pasien, MAX_STR, stdin);
+            id_pasien[strcspn(id_pasien, "\n")] = '\0';
+
+            cariKontrol(id_pasien, riwayat_pasien);
             break;
         }
 
