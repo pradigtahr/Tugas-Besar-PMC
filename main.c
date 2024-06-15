@@ -31,6 +31,22 @@ typedef struct RiwayatPasien {
     struct RiwayatPasien *next;
 } RiwayatPasien;
 
+// Struktur untuk menyimpan data hitungan
+typedef struct CountData {
+    char month[20];
+    int year;
+    int patientCount;
+    char diagnoses[100][50];
+    int diagCount;
+} CountData;
+
+// Struktur untuk menyimpan data tahunan
+typedef struct YearlyData {
+    int year;
+    int totalPatients;
+} YearlyData;
+
+
 // -------------------------- FUNGSI PARSING -------------------------------------------
 int add_pasien(Pasien **head, int nomor, char tokenNama[], char tokenAlamat[], char tokenKota[], char tokenTempatLahir[], char tokenTanggalLahir[], int umur, int bpjs, char tokenID[]) {
     Pasien *temp = (Pasien *)malloc(sizeof(Pasien));
@@ -878,21 +894,6 @@ void rata_rata_pendapatan_tahunan(RiwayatPasien *head_riwayat) {
 // --------------------------------------------------------------------------------------------
 
 // -------------------------- FUNGSI BAGIAN MUTI ---------------------------------------------
-// Struktur untuk menyimpan data hitungan
-typedef struct CountData {
-    char month[MAX_STR];
-    int year;
-    int patientCount;
-    char diagnoses[MAX_STR][MAX_STR];
-    int diagCount;
-} CountData;
-
-// Struktur untuk menyimpan data tahunan
-typedef struct YearlyData {
-    int year;
-    int totalPatients;
-} YearlyData;
-
 // Fungsi untuk mengekstrak tahun dari string tanggal
 int extractYear(char* tanggal) {
     int year;
@@ -939,19 +940,32 @@ void countPatients(RiwayatPasien* head, CountData* countData, int* totalRecords,
     }
 }
 
-// Fungsi untuk membandingkan dua struktur CountData untuk pengurutan
-int compare(const void* a, const void* b) {
-    CountData* dataA = (CountData*)a;
-    CountData* dataB = (CountData*)b;
-    return dataB->patientCount - dataA->patientCount;
+// Fungsi bubble sort untuk mengurutkan CountData
+void bubbleSortCountData(CountData* data, int n) {
+    for (int i = 0; i < n - 1; i++) {
+        for (int j = 0; j < n - i - 1; j++) {
+            if (data[j].patientCount < data[j + 1].patientCount) {
+                CountData temp = data[j];
+                data[j] = data[j + 1];
+                data[j + 1] = temp;
+            }
+        }
+    }
 }
 
-// Fungsi untuk membandingkan dua struktur YearlyData untuk pengurutan
-int compareYearly(const void* a, const void* b) {
-    YearlyData* dataA = (YearlyData*)a;
-    YearlyData* dataB = (YearlyData*)b;
-    return dataA->year - dataB->year;
+// Fungsi bubble sort untuk mengurutkan YearlyData
+void bubbleSortYearlyData(YearlyData* data, int n) {
+    for (int i = 0; i < n - 1; i++) {
+        for (int j = 0; j < n - i - 1; j++) {
+            if (data[j].year > data[j + 1].year) {
+                YearlyData temp = data[j];
+                data[j] = data[j + 1];
+                data[j + 1] = temp;
+            }
+        }
+    }
 }
+
 
 // --------------------------------------------------------------------------------------------
 
@@ -1127,30 +1141,32 @@ void start_program() {
         }
 
         case 5:{
-            CountData countData[120] = {0};
-            YearlyData yearlyData[100] = {0};  
-            int totalRecords = 0;
-            int totalYears = 0;
-            countPatients(riwayat_pasien, countData, &totalRecords, yearlyData, &totalYears);
+                CountData countData[120] = {0};  
+                YearlyData yearlyData[100] = {0};  
+                int totalRecords = 0;
+                int totalYears = 0;
+                countPatients(riwayat_pasien, countData, &totalRecords, yearlyData, &totalYears);
 
-            qsort(countData, totalRecords, sizeof(CountData), compare);
-            qsort(yearlyData, totalYears, sizeof(YearlyData), compareYearly);
+                // Menggunakan Bubble Sort untuk mengurutkan data
+                bubbleSortCountData(countData, totalRecords);
+                bubbleSortYearlyData(yearlyData, totalYears);
 
-            // Output hasil 
-            for (int i = 0; i < totalRecords; i++) {
-                printf("Bulan dan Tahun     : %s %d\n", countData[i].month, countData[i].year);
-                printf("Jumlah Pasien       : %d\n", countData[i].patientCount);
-                printf("Diagnosis Penyakit  : \n");
-                for (int j = 0; j < countData[i].diagCount; j++) {
-                    printf(" - %s\n", countData[i].diagnoses[j]);
+                // Output hasil 
+                for (int i = 0; i < totalRecords; i++) {
+                    printf("Bulan dan Tahun     : %s %d\n", countData[i].month, countData[i].year);
+                    printf("Jumlah Pasien       : %d\n", countData[i].patientCount);
+                    printf("Diagnosis Penyakit  : \n");
+                    for (int j = 0; j < countData[i].diagCount; j++) {
+                        printf(" - %s\n", countData[i].diagnoses[j]);
+                    }
+                    printf("\n");
                 }
-                printf("\n");
-            }
 
-            // Total Pasien tiap Tahun
-            for (int i = 0; i < totalYears; i++) {
-                printf("Tahun: %d, Total Jumlah Pasien: %d\n", yearlyData[i].year, yearlyData[i].totalPatients);
-            }
+                // Total Pasien tiap Tahun
+                for (int i = 0; i < totalYears; i++) {
+                    printf("Tahun: %d, Total Jumlah Pasien: %d\n", yearlyData[i].year, yearlyData[i].totalPatients);
+                }
+
             break;
         }
 
