@@ -191,7 +191,7 @@ void header(void){
 
 //-------------------------------------------------------------------------------------------
 
-// -------------------------- FUNGSI BAGIAN DIGTA -------------------------------------------
+// -------------------------- FUNGSI BAGIAN 1 -----------------------------------------------
 void save_to_csv(const char *filename, int nomor, char nama[], char alamat[], char kota[], char tempatLahir[], char tanggalLahir[], int umur, int bpjs, char id[]) {
     FILE *file = fopen(filename, "a");
     if (file == NULL) {
@@ -460,7 +460,7 @@ void delete_patient(Pasien **head, const char *filename, char id[]) {
 }
 //---------------------------------------------------------------------------------------------
 
-// -------------------------- FUNGSI BAGIAN GASTYA --------------------------------------------
+// -------------------------- FUNGSI BAGIAN 2 -------------------------------------------------
 #define FILENAME "RiwayatPasien.csv"
 #define MAX_LINE_LENGTH 1024
 
@@ -784,7 +784,7 @@ void delete_record() {
 }
 // --------------------------------------------------------------------------------------------
 
-// -------------------------- FUNGSI BAGIAN ISSA ----------------------------------------------
+// -------------------------- FUNGSI BAGIAN 3 -------------------------------------------------
 void informasi_pasien(Pasien *head_pasien, char id_pasien[]) {
     Pasien *current = head_pasien;
     int found = 0;
@@ -893,7 +893,7 @@ void rata_rata_pendapatan_tahunan(RiwayatPasien *head_riwayat) {
 }
 // --------------------------------------------------------------------------------------------
 
-// -------------------------- FUNGSI BAGIAN MUTI ---------------------------------------------
+// -------------------------- FUNGSI BAGIAN 5 -------------------------------------------------
 // Fungsi untuk mengekstrak tahun dari string tanggal
 int extractYear(char* tanggal) {
     int year;
