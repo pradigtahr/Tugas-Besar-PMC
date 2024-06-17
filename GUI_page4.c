@@ -64,54 +64,51 @@ gboolean read_medical_records_csv1(const char *filename) {
     return TRUE;
 }
 
-// Fungsi untuk menghitung pendapatan bulanan, tahunan, dan rata-rata biaya pertahun
-void calculate_income_and_average(const char *search_id, GtkWidget *labelMonthly, GtkWidget *labelYearly, GtkWidget *labelAverage) {
+// Fungsi untuk menghitung pendapatan bulanan dan tahunan serta informasi rata-rata pendapatan per tahun
+void calculate_income_and_average(GtkWidget *labelMonthly, GtkWidget *labelYearly, GtkWidget *labelAverage) {
     // Pendapatan bulanan (12 bulan)
     int monthly_income = 0;
 
     // Pendapatan tahunan
     int yearly_income = 0;
 
-    // Variabel untuk menyimpan biaya per tahun
+    // Variabel untuk menyimpan total biaya per tahun
     GHashTable *yearly_costs = g_hash_table_new(g_str_hash, g_str_equal);
 
     // Iterasi melalui medical_records_list1 untuk menghitung pendapatan bulanan dan tahunan
     for (GList *iter = medical_records_list1; iter != NULL; iter = g_list_next(iter)) {
         MedicalRecord1 *record = (MedicalRecord1 *)iter->data;
 
-        // Cek apakah ID pasien cocok dengan ID yang diinputkan
-        if (strcmp(record->id_number, search_id) == 0) {
-            // Ambil tahun dari tanggal (misal: tanggal dalam format "YYYY-MM-DD")
-            char *year_str = strtok(record->date, "-");
-            int year = atoi(year_str);
+        // Tambahkan biaya ke pendapatan bulanan
+        monthly_income += record->cost;
 
-            // Tambahkan biaya ke pendapatan bulanan
-            monthly_income += record->cost;
+        // Ambil tahun dari tanggal (misal: tanggal dalam format "YYYY-MM-DD")
+        char *year_str = strtok(g_strdup(record->date), "-");
+        int year = atoi(year_str);
 
-            // Tambahkan biaya ke pendapatan tahunan menggunakan hash table
-            int *year_cost = g_hash_table_lookup(yearly_costs, year_str);
-            if (year_cost == NULL) {
-                // Jika tahun belum ada dalam hash table, tambahkan biaya baru
-                g_hash_table_insert(yearly_costs, g_strdup(year_str), g_memdup(&record->cost, sizeof(int)));
-            } else {
-                // Jika tahun sudah ada dalam hash table, tambahkan biaya ke biaya yang sudah ada
-                *year_cost += record->cost;
-            }
+        // Tambahkan biaya ke pendapatan tahunan menggunakan hash table
+        int *year_cost = g_hash_table_lookup(yearly_costs, year_str);
+        if (year_cost == NULL) {
+            // Jika tahun belum ada dalam hash table, tambahkan biaya baru
+            g_hash_table_insert(yearly_costs, g_strdup(year_str), g_memdup(&record->cost, sizeof(int)));
+        } else {
+            // Jika tahun sudah ada dalam hash table, tambahkan biaya ke biaya yang sudah ada
+            *year_cost += record->cost;
         }
     }
 
     // Hitung rata-rata biaya pertahun
     double average_yearly_cost = 0.0;
     int num_years = g_hash_table_size(yearly_costs);
-    GHashTableIter iter;
-    gpointer key, value;
-    g_hash_table_iter_init(&iter, yearly_costs);
-    while (g_hash_table_iter_next(&iter, &key, &value)) {
-        int *year_cost = (int *)value;
-        yearly_income += *year_cost;
-    }
-
     if (num_years > 0) {
+        GHashTableIter iter;
+        gpointer key, value;
+        g_hash_table_iter_init(&iter, yearly_costs);
+        while (g_hash_table_iter_next(&iter, &key, &value)) {
+            int *year_cost = (int *)value;
+            yearly_income += *year_cost;
+        }
+
         average_yearly_cost = (double)yearly_income / num_years;
     }
 
@@ -132,27 +129,24 @@ void calculate_income_and_average(const char *search_id, GtkWidget *labelMonthly
 
 // Fungsi yang akan dipanggil ketika tombol ditekan
 void on_button_clicked(GtkButton *button, gpointer user_data) {
-    // Data user data berisi array dari GtkLabel dan GtkEntry
+    // Data user data berisi array dari GtkLabel
     GtkWidget **widgets = (GtkWidget **)user_data;
     GtkWidget *labelMonthly = widgets[0];
     GtkWidget *labelYearly = widgets[1];
     GtkWidget *labelAverage = widgets[2];
-    GtkWidget *entryID = widgets[3];
-
-    // Dapatkan ID yang dimasukkan pengguna
-    const char *search_id = gtk_entry_get_text(GTK_ENTRY(entryID));
 
     // Hitung pendapatan dan rata-rata biaya pertahun
-    calculate_income_and_average(search_id, labelMonthly, labelYearly, labelAverage);
+    calculate_income_and_average(labelMonthly, labelYearly, labelAverage);
 }
 
-// Fungsi utama
+// Fungsi untuk membuat GUI program
 void create_gui_program4() {
+    gtk_init(NULL, NULL);
 
     // Baca file CSV riwayat medis
     if (!read_medical_records_csv1("RiwayatMedis.csv")) {
         g_printerr("Gagal membaca file CSV RiwayatMedis.csv.\n");
-        return -1;
+        return;
     }
 
     // Buat window utama
@@ -164,10 +158,6 @@ void create_gui_program4() {
     // Buat box utama untuk menampung widget
     GtkWidget *box = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
     gtk_container_add(GTK_CONTAINER(window), box);
-
-    // Entry untuk input ID pasien
-    GtkWidget *entryID = gtk_entry_new();
-    gtk_box_pack_start(GTK_BOX(box), entryID, FALSE, FALSE, 0);
 
     // Button untuk menghitung
     GtkWidget *button = gtk_button_new_with_label("Hitung");
@@ -184,7 +174,7 @@ void create_gui_program4() {
     gtk_box_pack_start(GTK_BOX(box), labelAverage, FALSE, FALSE, 0);
 
     // Array untuk menyimpan widget-widget yang diperlukan
-    GtkWidget *widgets[] = {labelMonthly, labelYearly, labelAverage, entryID};
+    GtkWidget *widgets[] = {labelMonthly, labelYearly, labelAverage};
 
     // Hubungkan fungsi callback ke button clicked
     g_signal_connect(button, "clicked", G_CALLBACK(on_button_clicked), widgets);
@@ -197,8 +187,4 @@ void create_gui_program4() {
 
     // Bebaskan memori yang digunakan untuk data MedicalRecord1
     g_list_free_full(medical_records_list1, free_medical_record1);
-
-    return 0;
 }
-
-//page 2
