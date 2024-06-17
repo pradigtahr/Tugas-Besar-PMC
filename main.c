@@ -183,7 +183,7 @@ RiwayatPasien *input_riwayat_pasien() {
 void header(void){
     printf("-\t-\t-\t-\t-\t-\t-\t-\t-\t-\t-\t-\n");
     printf("TUGAS BESAR\n");
-    printf("EL2208 - PEMECAHAN MASSALAH DENGAN C\n");
+    printf("EL2208 - PEMECAHAN MASALAH DENGAN C\n");
     printf("Aplikasi Pencatatan Database Pasien\n");
     printf("Silakan pilih opsi menu yang sesuai (1-6)\n");
     printf("-\t-\t-\t-\t-\t-\t-\t-\t-\t-\t-\t-\n");
