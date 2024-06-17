@@ -1,8 +1,0 @@
-#ifndef PAGE1_H
-#define PAGE1_H
-
-#include <gtk/gtk.h>
-
-GtkWidget *create_page1(void);
-
-#endif /* PAGE1_H */
